@@ -6,6 +6,7 @@ if(@ARGV lt 4){
 	perl $0 <ref.fa>
 			<libxx.PE.gz list;insert size that's from big to short is best for view>
 			<yes or no;whether filter some PE>
+			<prefix for output>
 			<specify pos,chr,start,end, ex:chr1:100:2000>
 		detail: 
 			color:
@@ -18,7 +19,8 @@ if(@ARGV lt 4){
 	exit;
 }
 my $filterTAG=$ARGV[2];
-my @pos_specify=split(':',$ARGV[3]);
+my $prefix=$ARGV[3];
+my @pos_specify=split(':',$ARGV[4]);
 if(@pos_specify!=3){
 		print "error:<specify pos,chr,start,end, ex:chr1:100:2000>\n";
 		print "@pos_specify\n";
@@ -37,8 +39,10 @@ my @colors=("green","blue","yellow");
 my $ref="$ARGV[0]";
 my %reflen;
 my %scaffolds;
-`rm *.svg`;
-`fastalength $ref >$ref.length`;
+`rm $prefix.*.svg`;
+`set -vex;fastalength $ref >$ref.length`;
+die "error: fastalength $ref >$ref.length \n" if($?);
+
 open LEN,"$ref.length" or die "$!";
 while(<LEN>){
 	$_=~ /^(\S+)\s+(\S+)$/;
@@ -169,11 +173,10 @@ foreach my $k(@lists){
 #		$before2=$pos_start2;
 	}
 	close IN;
-
 	foreach my $scf(keys %lib){
 		#$chr_spec, $start_spec, $end_spec
 		if($scf ne $chr_spec){next}
-		open SVG,">>$scf.s$start_spec.e$end_spec.svg" or die "$!";
+		open SVG,">>$prefix.$scf.s$start_spec.e$end_spec.svg" or die "$!";
 		#my $scflen=$reflen{$scf};
 		my $scflen=$end_spec - $start_spec +1;
 		$radio=0.05;                        ## $radio piex per bp
@@ -189,7 +192,7 @@ foreach my $k(@lists){
 		my $p4x=$p3x;
 		my $p4y=$p1y;
 		my $svg;
-		if(-z "$scf.s$start_spec.e$end_spec.svg"){
+		if(-z "$prefix.$scf.s$start_spec.e$end_spec.svg"){
 			my $tmp="<svg width=\"$width1\" height=\"$height1\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n";
 ### draw genome line
 			$tmp.="<path d=\"M$p1x $p1y L$p2x $p2y L$p3x $p3y L$p4x $p4y Z\" />\n";
