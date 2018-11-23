@@ -181,7 +181,7 @@ foreach my $k(@lists){
 		my $scflen=$end_spec - $start_spec +1;
 		$radio=0.05;                        ## $radio piex per bp
 		my $width1=$radio*$scflen + 100; 
-		my $height1=$radio*10000*2;
+		my $height1=$radio*1000*2;
 ## scffold sequence line background
 		my $p1x=50;
 		my $p1y=$height1*2/3;
