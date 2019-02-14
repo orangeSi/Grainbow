@@ -1,5 +1,5 @@
 # Grainbow
-
+#### moved to https://github.com/orangeSi/ClustersPloter
 ```
 cat example/rain_10/draw.sh
 cat example/rain_11/draw.sh
